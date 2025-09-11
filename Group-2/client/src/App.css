@@ -1,0 +1,54 @@
+/* Nền toàn trang */
+html, body, #root {
+  height: 100%;
+}
+body {
+  background: #f0f2f5;
+  margin: 0;
+}
+
+/* Layout gốc */
+.app-layout {
+  min-height: 100vh;
+  background: #f0f2f5; /* đồng bộ nền với body */
+}
+
+/* Header xanh dương cố định */
+.app-header {
+  background: #1677ff;             /* xanh dương antd */
+  padding: 0 24px;
+  position: sticky;                 /* cố định khi scroll */
+  top: 0;
+  z-index: 100;                     /* cao hơn table/pagination */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Text/logo ở header */
+.header-logo {
+  color: #fff !important;
+  margin: 0 !important;
+  font-weight: 600;
+}
+.header-user-name {
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* Vùng nội dung */
+.main-content { padding: 24px; }
+
+/* Thẻ “card” chứa bảng */
+.content-card {
+  max-width: 1200px;
+  margin: 0 auto;                   /* căn giữa */
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Tùy chọn: căn giữa phân trang của antd Table */
+.ant-table-pagination {
+  justify-content: center !important;
+}

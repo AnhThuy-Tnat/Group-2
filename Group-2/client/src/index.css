@@ -1,0 +1,42 @@
+/* Ant Design–friendly global base styles */
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links using Ant Design primary color */
+a {
+  color: #1677ff;
+  text-decoration: none;
+}
+a:hover {
+  color: #0958d9;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: #f0f2f5; /* Ant Design layout background */
+  color: rgba(0, 0, 0, 0.88); /* Ant Design text color */
+  line-height: 1.5715; /* Ant Design line-height */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+}
+
+/* Headings scale similarly to Ant Typography */
+h1 { font-size: 24px; margin: 0; }
+h2 { font-size: 20px; margin: 0; }
+h3 { font-size: 16px; margin: 0; }
+
+/* Remove template button overrides to let Ant Design control components */
+button { font-family: inherit; }
+
+/* No color-scheme toggling; Ant Design manages themes */
