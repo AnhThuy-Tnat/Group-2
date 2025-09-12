@@ -55,7 +55,7 @@ export const useFilteredPatients = () => {
   return filtered;
 };
 
-// Statistics selector
+
 export const usePatientStats = () => {
   const { patients } = usePatientSelectors();
   

@@ -13,7 +13,7 @@ interface PatientFormModalProps {
 const PatientFormModal: React.FC<PatientFormModalProps> = ({ open, onClose, onFinish, initialValues }) => {
   const [form] = Form.useForm();
 
-  // Dùng useEffect để set giá trị cho form khi ở chế độ "sửa"
+
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
@@ -31,7 +31,7 @@ const PatientFormModal: React.FC<PatientFormModalProps> = ({ open, onClose, onFi
         ...values,
         registrationDate: values.registrationDate.format('DD/MM/YYYY')
       });
-      onClose(); // Đóng modal sau khi submit
+      onClose(); 
     }).catch(info => {
       console.log('Validate Failed:', info);
     });

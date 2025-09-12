@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Space, Avatar, Typography, Tag, Descriptions, Button, Form, Input, Select, DatePicker, Row, Col } from 'antd';
+import { useEffect as useReactEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { fetchPhysicians } from '../redux/physician/physicianSlice';
 import type { Patient } from '../mockData';
 import dayjs from 'dayjs';
 // Province options will be loaded from API to ensure exact name matching
@@ -21,6 +24,10 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
   const [districts, setDistricts] = useState<string[]>([]);
   const [provinceMap, setProvinceMap] = useState<Record<string, string[]>>({});
   const [provinceOptions, setProvinceOptions] = useState<string[]>([]);
+
+  const dispatch = useAppDispatch();
+  const physicians = useAppSelector(state => state.physician.list);
+  const physiciansLoading = useAppSelector(state => state.physician.loading);
 
   useEffect(() => {
     if (externalMode) setMode(externalMode);
@@ -76,6 +83,22 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
     setDistricts(provinceMap[provinceName] || []);
     form.setFieldsValue({ city: undefined });
   };
+
+  // load physicians on mount
+  useReactEffect(() => {
+    dispatch(fetchPhysicians());
+  }, [dispatch]);
+
+  // When physicians loaded, if current form physician is a name string, map to corresponding id
+  useReactEffect(() => {
+    const current = form.getFieldValue('physician');
+    if (current && typeof current === 'string') {
+      const match = physicians.find(p => p.name === current);
+      if (match) {
+        form.setFieldsValue({ physician: match.id });
+      }
+    }
+  }, [physicians, form]);
 
   const initials = patient ? patient.name.split(' ').map(n => n[0]).join('') : '';
 
@@ -162,7 +185,16 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
             <Descriptions.Item label="Date of Birth">{patient.dob}</Descriptions.Item>
             <Descriptions.Item label="Email">{patient.email}</Descriptions.Item>
             <Descriptions.Item label="Phone Number">{patient.phone}</Descriptions.Item>
-            <Descriptions.Item label="Doctor">{patient.physician}</Descriptions.Item>
+            <Descriptions.Item label="Doctor">
+              {(() => {
+                const value = form.getFieldValue('physician');
+                if (value && typeof value === 'string' && value.length === 24) {
+                  const found = physicians.find(p => p.id === value);
+                  return found ? found.name : patient.physician;
+                }
+                return patient.physician;
+              })()}
+            </Descriptions.Item>
             <Descriptions.Item label="Permanent Address">{`${patient.addressInfo.address}, ${patient.addressInfo.city}, ${patient.addressInfo.state}, ${patient.addressInfo.country}`}</Descriptions.Item>
             <Descriptions.Item label="Registration Date">{patient.registrationDate}</Descriptions.Item>
           </Descriptions>
@@ -197,9 +229,9 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
                   {
                     validator: (_, value) => {
                       if (!value) return Promise.resolve();
-                      return value.isAfter(dayjs(), 'day')
+                      return value.isBefore(dayjs(), 'day')
                         ? Promise.resolve()
-                        : Promise.reject(new Error('Date of Birth must be after today'));
+                        : Promise.reject(new Error('Date of Birth must be before today'));
                     },
                   },
                 ]}
@@ -208,8 +240,12 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="physician" label="Doctor" rules={[{ required: true, message: 'Vui lòng nhập mã bác sĩ!' }]}>
-            <Input />
+          <Form.Item name="physician" label="Doctor" rules={[{ required: true, message: 'Vui lòng chọn bác sĩ!' }]}>
+            <Select showSearch optionFilterProp="children" loading={physiciansLoading} placeholder="Chọn bác sĩ">
+              {physicians.map(p => (
+                <Select.Option key={p.id} value={p.id}>{p.title ? `${p.title} ` : ''}{p.name}</Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item name="state" label="Province/City" style={{ marginBottom: 12 }} rules={[{ required: true }]}> 
@@ -226,7 +262,7 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
               ))}
             </Select>
             </Form.Item>
-          <Form.Item name="address" label="Permanent Address" style={{ marginBottom: 12 }} rules={[{ required: true }]}> 
+          <Form.Item name="address" label="Permanent Address" style={{ marginBottom: 12 }} > 
             <Input />
           </Form.Item>
           <Form.Item
@@ -238,9 +274,9 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
               {
                 validator: (_, value) => {
                   if (!value) return Promise.resolve();
-                  return value.isBefore(dayjs(), 'day')
+                  return value.isAfter(dayjs(), 'day')
                     ? Promise.resolve()
-                    : Promise.reject(new Error('Registration Date must be before today'));
+                    : Promise.reject(new Error('Registration Date must be after today'));
                 },
               },
             ]}

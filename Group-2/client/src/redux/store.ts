@@ -3,17 +3,19 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from '@reduxjs/toolkit';
 import patientReducer from './patient/patientSlice';
+import physicianReducer from './physician/physicianSlice';
 
 // Root reducer
 const rootReducer = combineReducers({
   patient: patientReducer,
+  physician: physicianReducer,
 });
 
 // Persist config
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['patient'], // Only persist patient state
+  whitelist: ['patient','physician'], // Persist patient and physician state
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
