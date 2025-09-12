@@ -33,6 +33,8 @@ const PatientList: React.FC = () => {
   };
 
 
+
+
   const handleTableChange = (pagination: any) => {
     dispatch(setPagination({
       current: pagination.current,
@@ -96,6 +98,8 @@ const PatientList: React.FC = () => {
       ),
       sorter: (a: Patient, b: Patient) => a.name.localeCompare(b.name),
     },
+
+    
     {
       title: 'Email',
       dataIndex: 'email',
@@ -112,7 +116,7 @@ const PatientList: React.FC = () => {
       key: 'gender',
       render: (gender: string) => (
         <Tag color={gender === 'Male' ? 'blue' : 'pink'}>
-          {gender === 'Male' ? 'Nam' : 'Nữ'}
+          {gender === 'Male' ? 'Male' : 'Famele'}
         </Tag>
       ),
     },

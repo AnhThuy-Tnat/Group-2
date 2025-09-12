@@ -37,14 +37,15 @@ export const patientService = {
         return await newPatient.populate("physician");
     },
     getById: async (id) => {
-        const patient = Patient.findOne({ id, status: "ACTIVE" }).populate("physician");
+        // Use MongoDB _id field for lookups
+        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" }).populate("physician");
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
         return patient;
     },
     update: async (id, input) => {
-        const patient = await Patient.findOne({ id, status: "ACTIVE" });
+        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
