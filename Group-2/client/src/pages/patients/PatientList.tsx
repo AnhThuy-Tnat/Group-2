@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Input, Space, Card, Typography, Tag, message, Avatar, Tooltip, Popconfirm, Flex } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, UserOutlined } from '@ant-design/icons';
-import { useAppDispatch } from '../redux/hooks';
-import { fetchPatients, deletePatient, setFilters, setPagination, setCurrentPatient } from '../redux/patient/patientSlice';
-import { usePatientSelectors, useFilteredPatients } from '../redux/hooks';
-import type { Patient } from '../redux/patient/patientSlice';
-import PatientDrawerWrapper from './PatientDrawerWrapper';
+import { useAppDispatch } from '../../redux/hooks';
+import { fetchPatients, deletePatient, setFilters, setPagination, setCurrentPatient } from '../../redux/patient/patientSlice';
+import { usePatientSelectors, useFilteredPatients } from '../../redux/hooks';
+import type { Patient } from '../../redux/patient/patientSlice';
+import PatientDrawerWrapper from '../../components/PatientDrawerWrapper';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -20,10 +20,11 @@ const PatientList: React.FC = () => {
 
   // Fetch patients on component mount
   useEffect(() => {
-    dispatch(fetchPatients({ 
-      page: pagination.current, 
+    console.log('Fetching patients with', { page: pagination.current, limit: pagination.pageSize, filter: filters.search });
+    dispatch(fetchPatients({
+      page: pagination.current,
       limit: pagination.pageSize,
-      filter: filters.search 
+      filter: filters.search
     }));
   }, [dispatch, pagination.current, pagination.pageSize, filters.search]);
 
@@ -182,13 +183,13 @@ const PatientList: React.FC = () => {
             style={{ width: 300 }}
             prefix={<SearchOutlined />}
           />
-           
+
         </Space>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
           Thêm bệnh nhân
         </Button>
       </Flex>
-      
+
       {/* Bảng hiển thị dữ liệu */}
       <Table
         rowSelection={rowSelection}

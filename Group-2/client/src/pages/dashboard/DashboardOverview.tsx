@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space, Spin, Alert } from 'antd';
 import { TeamOutlined, CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
-import { useAppDispatch } from '../redux/hooks';
-import { fetchPatients } from '../redux/patient/patientSlice';
-import { usePatientSelectors, usePatientStats } from '../redux/hooks';
+import { useAppDispatch, usePatientSelectors, usePatientStats } from '../../redux/hooks';
+import { fetchPatients } from '../../redux/patient/patientSlice';
 
 const { Title } = Typography;
 
@@ -11,12 +10,12 @@ const DashboardOverview: React.FC = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = usePatientSelectors();
   const stats = usePatientStats();
-  
+
   // Fetch patients on component mount
   useEffect(() => {
     dispatch(fetchPatients({ page: 1, limit: 1000 })); // Fetch all patients for stats
   }, [dispatch]);
-  
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -24,7 +23,7 @@ const DashboardOverview: React.FC = () => {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <Alert
@@ -36,7 +35,7 @@ const DashboardOverview: React.FC = () => {
       />
     );
   }
-  
+
   return (
     <Space direction="vertical" size="large" style={{ display: 'flex' }}>
       <Title level={2}>Tổng quan</Title>

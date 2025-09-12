@@ -10,13 +10,16 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import { apolloClient } from './apolloClient';
 import { store, persistor } from './redux/store';
+import { BrowserRouter } from 'react-router-dom';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ApolloProvider client={apolloClient}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ApolloProvider>
       </PersistGate>
     </Provider>
