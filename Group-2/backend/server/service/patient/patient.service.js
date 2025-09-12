@@ -24,6 +24,11 @@ export const patientService = {
         };
     },
     create: async (input) => {
+
+        const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(input.email)) {
+            throw new Error(`Email ${input.email} không hợp lệ`);
+        }
         const physicianExists = await Physician.findById(input.physician);
         if (!physicianExists) {
             throw new Error(`Physician with id ${input.physician} does not exist`);
