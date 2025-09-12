@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Layout, ConfigProvider, Flex, Avatar, Typography, Space, Menu } from 'antd';
 import { UserOutlined, DashboardOutlined, TeamOutlined, BarChartOutlined } from '@ant-design/icons';
 import viVN from 'antd/locale/vi_VN';
-import PatientManagementPage from './components/PatientManagementPage';
 import DashboardOverview from './components/DashboardOverview.tsx';
 import StatisticsPage from './components/StatisticsPage.tsx';
+import PatientList from './components/PatientList';
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -46,7 +46,7 @@ const App: React.FC = () => {
               onClick={(e) => setActiveKey(e.key)}
               items={[
                 { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
-                { key: 'patients', icon: <TeamOutlined />, label: 'Danh sách bệnh nhân' },
+                { key: 'patient-list', icon: <TeamOutlined />, label: 'Quản lý bệnh nhân' },
                 { key: 'statistics', icon: <BarChartOutlined />, label: 'Thống kê' },
               ]}
             />
@@ -55,7 +55,7 @@ const App: React.FC = () => {
           {/* === CONTENT === */}
           <Content className="main-content" style={{ padding: 24 }}>
             {activeKey === 'dashboard' && <DashboardOverview />}
-            {activeKey === 'patients' && <PatientManagementPage />}
+            {activeKey === 'patient-list' && <PatientList />}
             {activeKey === 'statistics' && <StatisticsPage />}
           </Content>
         </Layout>
