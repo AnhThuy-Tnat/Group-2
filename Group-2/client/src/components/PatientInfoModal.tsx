@@ -16,7 +16,7 @@ const PatientInfoModal: React.FC<Props> = ({ open, onClose, patient }) => {
 
   return (
     <Modal
-      title="Thông tin bệnh nhân"
+      title="Patient information"
       open={open}
       onCancel={onClose}
       footer={[<Button key="close" onClick={onClose}>Đóng</Button>]}
@@ -33,13 +33,12 @@ const PatientInfoModal: React.FC<Props> = ({ open, onClose, patient }) => {
         </Space>
 
         <Descriptions bordered size="small" column={1}>
-          <Descriptions.Item label="Giới tính">{patient.gender}</Descriptions.Item>
-          <Descriptions.Item label="Ngày sinh">{patient.dob}</Descriptions.Item>
+          <Descriptions.Item label="Gender">{patient.gender}</Descriptions.Item>
+          <Descriptions.Item label="Day of birth">{patient.dob}</Descriptions.Item>
           <Descriptions.Item label="Email">{patient.email}</Descriptions.Item>
-          <Descriptions.Item label="Điện thoại">{patient.phone}</Descriptions.Item>
-          <Descriptions.Item label="Bác sĩ">{patient.physician}</Descriptions.Item>
-          <Descriptions.Item label="Địa chỉ">{`${patient.addressInfo.address}, ${patient.addressInfo.city}, ${patient.addressInfo.state}, ${patient.addressInfo.country}`}</Descriptions.Item>
-          <Descriptions.Item label="Cơ sở">{patient.facility}</Descriptions.Item>
+          <Descriptions.Item label="Phone number">{patient.phone}</Descriptions.Item>
+          <Descriptions.Item label="Physician">{patient.physician}</Descriptions.Item>
+          <Descriptions.Item label="Address">{`${patient.addressInfo.address}, ${patient.addressInfo.city}, ${patient.addressInfo.state}, ${patient.addressInfo.country}`}</Descriptions.Item>
         </Descriptions>
       </Space>
     </Modal>

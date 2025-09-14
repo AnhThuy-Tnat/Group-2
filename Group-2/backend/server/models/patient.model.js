@@ -14,7 +14,7 @@ const PatientSchema = new mongoose.Schema(
     {
         email: { type: String, required: true, trim: true },
         name: { type: String, required: true, trim: true },
-        phone: { type: String, trim: true },
+        phone: { type: String, trim: true, match: [/^\+?[0-9]{7,15}$/, "Invalid phone number"] },
         gender: { type: String, enum: ["Male", "Female"], trim: true },
         dob: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ }, // YYYY-MM-DD
         physician: { type: mongoose.Schema.Types.ObjectId, ref: "Physician", required: true },

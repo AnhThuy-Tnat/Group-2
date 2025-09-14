@@ -34,12 +34,12 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
         physician: updatedPatient.physician, // This is a string in mockData format
         addressInfo: updatedPatient.addressInfo
       };
-      
-      await dispatch(updatePatient({ 
-        id: updatedPatient.id, 
-        input: patientInput 
+
+      await dispatch(updatePatient({
+        id: updatedPatient.id,
+        input: patientInput
       })).unwrap();
-      
+
       onUpdate?.(updatedPatient);
       onClose(); // Đóng drawer sau khi update thành công
     } catch (error) {
@@ -58,9 +58,9 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
         physician: newPatientData.physician, // This is a string in mockData format
         addressInfo: newPatientData.addressInfo
       };
-      
+
       await dispatch(createPatient(patientInput)).unwrap();
-      
+
       onCreate?.(newPatientData);
       onClose(); // Đóng drawer sau khi create thành công
     } catch (error) {
@@ -92,10 +92,8 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
   return (
     <PatientDrawer
       open={open}
-      patient={patient ? convertToMockDataPatient(patient) : undefined}
+      patient={patient ? (patient) : undefined}
       onClose={onClose}
-      onUpdate={handleUpdate}
-      onCreate={handleCreate}
       mode={mode}
     />
   );

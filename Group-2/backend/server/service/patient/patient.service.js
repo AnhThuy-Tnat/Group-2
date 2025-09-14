@@ -14,6 +14,7 @@ export const patientService = {
 
         const total = await Patient.countDocuments(condition);
         const patients = await Patient.find(condition)
+            .sort({ name: 1 })
             .skip(skip)
             .limit(limit);
         await Patient.populate(patients, { path: "physician" });
@@ -24,7 +25,6 @@ export const patientService = {
         };
     },
     create: async (input) => {
-
         const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(input.email)) {
             throw new Error(`Email ${input.email} không hợp lệ`);
@@ -37,15 +37,14 @@ export const patientService = {
         return await newPatient.populate("physician");
     },
     getById: async (id) => {
-        // Prefer native findById for robustness
-        const patient = await Patient.findById(id).populate("physician");
+        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
-        return patient;
+        return await patient.populate("physician");
     },
     update: async (id, input) => {
-        const patient = await Patient.findById(id);
+        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
@@ -60,13 +59,12 @@ export const patientService = {
         return await updatedPatient.populate("physician");
     },
     delete: async (id) => {
-        const patient = await Patient.findById(id);
+        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
         patient.status = "DELETED";
         await patient.save();
-
         return true;
     }
 };

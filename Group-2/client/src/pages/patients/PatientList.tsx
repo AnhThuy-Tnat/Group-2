@@ -63,7 +63,7 @@ const PatientList: React.FC = () => {
   // show error bằng message popup
   useEffect(() => {
     if (error) {
-      messageApi.error(`Lỗi tải dữ liệu: ${error}`);
+      messageApi.error(`Error: ${error}`);
     }
   }, [error, messageApi]);
 
@@ -99,9 +99,9 @@ const PatientList: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await dispatch(deletePatient(id)).unwrap();
-      messageApi.success('Xóa bệnh nhân thành công');
+      messageApi.success('Delete patient successful');
     } catch (error) {
-      messageApi.error('Lỗi khi xóa bệnh nhân');
+      messageApi.error('Error deleting patient');
     }
   };
 
@@ -112,7 +112,7 @@ const PatientList: React.FC = () => {
 
   const columns = [
     {
-      title: 'Bệnh nhân',
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (text: string) => (
@@ -121,7 +121,6 @@ const PatientList: React.FC = () => {
           <span>{text}</span>
         </Space>
       ),
-      sorter: (a: Patient, b: Patient) => a.name.localeCompare(b.name),
     },
     {
       title: 'Email',
@@ -182,7 +181,6 @@ const PatientList: React.FC = () => {
 
   return (
     <Space direction="vertical" size="large" style={{ display: 'flex' }}>
-      {/* cần render contextHolder để message hiển thị */}
       {contextHolder}
 
       <Title level={2}>Patient Management</Title>
@@ -232,26 +230,7 @@ const PatientList: React.FC = () => {
       <PatientDrawer
         open={isDrawerOpen}
         onClose={handleCloseDrawer}
-        patient={currentPatient ? {
-          key: currentPatient.id,
-          id: currentPatient.id,
-          name: currentPatient.name,
-          email: currentPatient.email,
-          phone: currentPatient.phone || '',
-          gender: (currentPatient.gender as 'Male' | 'Female') || 'Male',
-          dob: currentPatient.dob || '',
-          physician: currentPatient.physician.name,
-          addressInfo: {
-            address: currentPatient.addressInfo?.address || '',
-            city: currentPatient.addressInfo?.city || '',
-            state: currentPatient.addressInfo?.state || '',
-            country: currentPatient.addressInfo?.country || '',
-          },
-          facility: 'ITR Hospital',
-          status: 'Tái kết nối' as const
-        } : undefined}
-        onUpdate={() => messageApi.success('Patient update successful')}
-        onCreate={() => messageApi.success('Creating successful patient')}
+        patient={currentPatient || undefined}
         mode={drawerMode}
       />
     </Space>

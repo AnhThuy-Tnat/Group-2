@@ -14,9 +14,6 @@ export interface Patient {
     state: string;
     country: string;
   };
-
-  status: 'Tái kết nối' | 'Tắt kết nối';
-  facility: string;
 }
 
 // Hàm tạo mã BN ngẫu nhiên (ví dụ: 00030, 00027)
@@ -39,6 +36,4 @@ export const initialPatients: Patient[] = Array.from({ length: 25 }, (_, i) => (
     state: 'HCM',
     country: 'Việt Nam',
   },
-  status: i % 3 === 0 ? 'Tái kết nối' : 'Tắt kết nối',
-  facility: '',
 }));

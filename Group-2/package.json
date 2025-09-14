@@ -1,0 +1,13 @@
+{
+  "name": "grp2project",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../client && npm install",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd client && npm run dev",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:fronted\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

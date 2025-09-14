@@ -1,5 +1,5 @@
 import { Layout, Flex, Avatar, Typography, Space, Menu, Button } from 'antd';
-import { UserOutlined, DashboardOutlined, TeamOutlined, BarChartOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { UserOutlined, TeamOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 const { Header, Content, Sider } = Layout;
@@ -36,13 +36,13 @@ export default function AppLayout() {
 
         <Layout>
             {/* === SIDEBAR === */}
-            <Sider 
-                collapsible 
-                collapsed={collapsed} 
+            <Sider
+                collapsible
+                collapsed={collapsed}
                 onCollapse={setCollapsed}
-                width={230} 
+                width={230}
                 collapsedWidth={80}
-                theme="dark" 
+                theme="dark"
                 style={{ minHeight: 'calc(100vh - 64px)' }}
                 breakpoint="lg"
                 onBreakpoint={(broken) => {
@@ -72,9 +72,7 @@ export default function AppLayout() {
                     selectedKeys={[activeKey]}
                     onClick={(e) => navigate(`/${e.key}`)}
                     items={[
-                        { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
                         { key: 'patients', icon: <TeamOutlined />, label: 'Quản lý bệnh nhân' },
-                        { key: 'statistics', icon: <BarChartOutlined />, label: 'Thống kê' },
                     ]}
                 />
             </Sider>
