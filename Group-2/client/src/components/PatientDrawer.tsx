@@ -43,7 +43,6 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
         city: patient.addressInfo.city,
         state: patient.addressInfo.state,
         country: patient.addressInfo.country,
-        registrationDate: dayjs(patient.registrationDate, 'DD/MM/YYYY'),
         facility: patient.facility,
       });
       if (!externalMode) setMode('view');
@@ -119,7 +118,7 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
             state: values.state,
             country: values.country,
           },
-          registrationDate: values.registrationDate.format('DD/MM/YYYY')
+
         };
         onUpdate(updated);
         setMode('view');
@@ -137,7 +136,6 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
             state: values.state,
             country: 'Việt Nam',
           },
-          registrationDate: values.registrationDate.format('DD/MM/YYYY'),
           facility: values.facility,
           status: 'Tái kết nối',
         });
@@ -196,12 +194,11 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
               })()}
             </Descriptions.Item>
             <Descriptions.Item label="Permanent Address">{`${patient.addressInfo.address}, ${patient.addressInfo.city}, ${patient.addressInfo.state}, ${patient.addressInfo.country}`}</Descriptions.Item>
-            <Descriptions.Item label="Registration Date">{patient.registrationDate}</Descriptions.Item>
           </Descriptions>
         </Space>
       ) : (
         <Form layout="vertical" form={form}>
-          <Form.Item name="name" label="Patient Name" style={{ marginBottom: 12 }} rules={[{ required: true, message: 'Vui lòng nhập tên bệnh nhân!' }]}>
+          <Form.Item name="name" label="Patient Name" style={{ marginBottom: 12 }} rules={[{ required: true, message: 'Please enter patient name' }]}>
             <Input />
           </Form.Item>
           <Form.Item name="email" label="Email" style={{ marginBottom: 12 }} rules={[{ required: true, type: 'email', message: 'Email hợp lệ!' }]}>
@@ -248,42 +245,25 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, o
             </Select>
           </Form.Item>
 
-          <Form.Item name="state" label="Province/City" style={{ marginBottom: 12 }} rules={[{ required: true }]}> 
+          <Form.Item name="state" label="Province/City" style={{ marginBottom: 12 }} >
             <Select showSearch optionFilterProp="children" onChange={(val) => loadDistricts(val)} loading={!Object.keys(provinceMap).length}>
               {provinceOptions.map(p => (
                 <Select.Option key={p} value={p}>{p}</Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="city" label="District" style={{ marginBottom: 12 }} rules={[{ required: true }]}> 
+          <Form.Item name="city" label="District" style={{ marginBottom: 12 }} >
             <Select showSearch optionFilterProp="children" disabled={districts.length === 0}>
               {districts.map(d => (
                 <Select.Option key={d} value={d}>{d}</Select.Option>
               ))}
             </Select>
-            </Form.Item>
-          <Form.Item name="address" label="Permanent Address" style={{ marginBottom: 12 }} > 
+          </Form.Item>
+          <Form.Item name="address" label="Permanent Address" style={{ marginBottom: 12 }} >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="registrationDate"
-            label="Registration Date"
-            style={{ marginBottom: 12 }}
-            rules={[
-              { required: true, message: 'Vui lòng chọn ngày đăng ký!' },
-              {
-                validator: (_, value) => {
-                  if (!value) return Promise.resolve();
-                  return value.isAfter(dayjs(), 'day')
-                    ? Promise.resolve()
-                    : Promise.reject(new Error('Registration Date must be after today'));
-                },
-              },
-            ]}
-          >
-            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-          </Form.Item>
-        
+
+
         </Form>
       )}
     </Drawer>

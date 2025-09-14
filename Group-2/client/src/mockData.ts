@@ -14,7 +14,7 @@ export interface Patient {
     state: string;
     country: string;
   };
-  registrationDate: string;
+
   status: 'Tái kết nối' | 'Tắt kết nối';
   facility: string;
 }
@@ -39,7 +39,6 @@ export const initialPatients: Patient[] = Array.from({ length: 25 }, (_, i) => (
     state: 'HCM',
     country: 'Việt Nam',
   },
-  registrationDate: `25/03/2024`,
   status: i % 3 === 0 ? 'Tái kết nối' : 'Tắt kết nối',
   facility: '',
 }));

@@ -19,7 +19,7 @@ const PatientInfoModal: React.FC<Props> = ({ open, onClose, patient }) => {
       title="Thông tin bệnh nhân"
       open={open}
       onCancel={onClose}
-      footer={[ <Button key="close" onClick={onClose}>Đóng</Button> ]}
+      footer={[<Button key="close" onClick={onClose}>Đóng</Button>]}
       width={600}
     >
       <Space direction="vertical" size="large" style={{ display: 'flex' }}>
@@ -39,7 +39,6 @@ const PatientInfoModal: React.FC<Props> = ({ open, onClose, patient }) => {
           <Descriptions.Item label="Điện thoại">{patient.phone}</Descriptions.Item>
           <Descriptions.Item label="Bác sĩ">{patient.physician}</Descriptions.Item>
           <Descriptions.Item label="Địa chỉ">{`${patient.addressInfo.address}, ${patient.addressInfo.city}, ${patient.addressInfo.state}, ${patient.addressInfo.country}`}</Descriptions.Item>
-          <Descriptions.Item label="Ngày đăng ký">{patient.registrationDate}</Descriptions.Item>
           <Descriptions.Item label="Cơ sở">{patient.facility}</Descriptions.Item>
         </Descriptions>
       </Space>

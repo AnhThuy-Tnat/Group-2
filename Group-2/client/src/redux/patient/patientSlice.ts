@@ -208,7 +208,7 @@ export const fetchPatient = createAsyncThunk(
     try {
       const { data } = await apolloClient.query({
         query: GET_PATIENT,
-        variables: { id }
+        variables: { id },
       });
       return (data as any).patient;
     } catch (error: any) {
@@ -302,7 +302,7 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Fetch single patient
       .addCase(fetchPatient.pending, (state) => {
         state.loading = true;
@@ -316,7 +316,7 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Create patient
       .addCase(createPatient.pending, (state) => {
         state.loading = true;
@@ -331,7 +331,7 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Update patient
       .addCase(updatePatient.pending, (state) => {
         state.loading = true;
@@ -351,7 +351,7 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Delete patient
       .addCase(deletePatient.pending, (state) => {
         state.loading = true;
