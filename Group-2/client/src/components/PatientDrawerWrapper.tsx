@@ -41,6 +41,7 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
       })).unwrap();
       
       onUpdate?.(updatedPatient);
+      onClose(); // Đóng drawer sau khi update thành công
     } catch (error) {
       console.error('Error updating patient:', error);
     }
@@ -61,6 +62,7 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
       await dispatch(createPatient(patientInput)).unwrap();
       
       onCreate?.(newPatientData);
+      onClose(); // Đóng drawer sau khi create thành công
     } catch (error) {
       console.error('Error creating patient:', error);
     }
@@ -82,7 +84,7 @@ const PatientDrawerWrapper: React.FC<PatientDrawerWrapperProps> = ({
       state: reduxPatient.addressInfo?.state || '',
       country: reduxPatient.addressInfo?.country || '',
     },
-    registrationDate: new Date().toLocaleDateString('vi-VN'),
+
     facility: 'ITR Hospital',
     status: 'Tái kết nối' as const
   });

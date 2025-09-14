@@ -37,15 +37,15 @@ export const patientService = {
         return await newPatient.populate("physician");
     },
     getById: async (id) => {
-        // Use MongoDB _id field for lookups
-        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" }).populate("physician");
+        // Prefer native findById for robustness
+        const patient = await Patient.findById(id).populate("physician");
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
         return patient;
     },
     update: async (id, input) => {
-        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
+        const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }

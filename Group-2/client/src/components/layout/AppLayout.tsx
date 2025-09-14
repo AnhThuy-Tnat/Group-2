@@ -1,5 +1,5 @@
-import { Layout, Flex, Avatar, Typography, Space, Menu } from 'antd';
-import { UserOutlined, DashboardOutlined, TeamOutlined, BarChartOutlined } from '@ant-design/icons';
+import { Layout, Flex, Avatar, Typography, Space, Menu, Button } from 'antd';
+import { UserOutlined, DashboardOutlined, TeamOutlined, BarChartOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 const { Header, Content, Sider } = Layout;
@@ -15,6 +15,7 @@ export default function AppLayout() {
     };
 
     const [activeKey, setActiveKey] = useState<string>(getKeyFromPath(location.pathname));
+    const [collapsed, setCollapsed] = useState(false);
 
     // Cập nhật activeKey khi URL thay đổi (F5 hoặc điều hướng tay)
     useEffect(() => {
@@ -35,7 +36,35 @@ export default function AppLayout() {
 
         <Layout>
             {/* === SIDEBAR === */}
-            <Sider width={230} theme="dark" style={{ minHeight: 'calc(100vh - 64px)' }}>
+            <Sider 
+                collapsible 
+                collapsed={collapsed} 
+                onCollapse={setCollapsed}
+                width={230} 
+                collapsedWidth={80}
+                theme="dark" 
+                style={{ minHeight: 'calc(100vh - 64px)' }}
+                breakpoint="lg"
+                onBreakpoint={(broken) => {
+                    if (broken) {
+                        setCollapsed(true);
+                    }
+                }}
+                trigger={
+                    <Button
+                        type="text"
+                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        style={{
+                            fontSize: '16px',
+                            width: '100%',
+                            height: 48,
+                            color: 'white',
+                            border: 'none',
+                            background: 'transparent'
+                        }}
+                    />
+                }
+            >
                 <div style={{ height: 16 }} />
                 <Menu
                     theme="dark"

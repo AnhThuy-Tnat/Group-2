@@ -11,7 +11,6 @@ const DashboardOverview: React.FC = () => {
   const { loading, error } = usePatientSelectors();
   const stats = usePatientStats();
 
-  // Fetch patients on component mount
   useEffect(() => {
     dispatch(fetchPatients({ page: 1, limit: 1000 })); // Fetch all patients for stats
   }, [dispatch]);
