@@ -286,6 +286,7 @@ const patientSlice = createSlice({
       return initialState;
     }
   },
+  
   extraReducers: (builder) => {
     // Fetch patients
     builder

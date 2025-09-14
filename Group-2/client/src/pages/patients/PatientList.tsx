@@ -30,7 +30,7 @@ import {
 } from '../../redux/patient/patientSlice';
 import { usePatientSelectors, useFilteredPatients } from '../../redux/hooks';
 import type { Patient } from '../../redux/patient/patientSlice';
-import PatientDrawerWrapper from '../../components/PatientDrawerWrapper';
+import PatientDrawer from '../../components/PatientDrawer';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -40,7 +40,6 @@ const PatientList: React.FC = () => {
   const { loading, error, filters, pagination, currentPatient } = usePatientSelectors();
   const filteredPatients = useFilteredPatients();
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<'create' | 'view' | 'edit'>('create');
 
@@ -77,14 +76,6 @@ const PatientList: React.FC = () => {
     dispatch(setFilters({ search: value }));
   };
 
-  const handleTableChange = (pagination: any) => {
-    dispatch(
-      setPagination({
-        current: pagination.current,
-        pageSize: pagination.pageSize,
-      }),
-    );
-  };
 
   // CRUD handlers
   const handleCreate = () => {
@@ -188,12 +179,6 @@ const PatientList: React.FC = () => {
     },
   ];
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys);
-    },
-  };
 
   return (
     <Space direction="vertical" size="large" style={{ display: 'flex' }}>
@@ -218,13 +203,11 @@ const PatientList: React.FC = () => {
       </Flex>
 
       <Table
-        rowSelection={rowSelection}
         columns={columns}
         dataSource={filteredPatients}
         rowKey="id"
         loading={loading}
         pagination={false}
-        onChange={handleTableChange}
         scroll={{
           x: 'max-content',
           y: 55 * 10,
@@ -246,10 +229,27 @@ const PatientList: React.FC = () => {
         />
       </div>
 
-      <PatientDrawerWrapper
+      <PatientDrawer
         open={isDrawerOpen}
         onClose={handleCloseDrawer}
-        patient={currentPatient || undefined}
+        patient={currentPatient ? {
+          key: currentPatient.id,
+          id: currentPatient.id,
+          name: currentPatient.name,
+          email: currentPatient.email,
+          phone: currentPatient.phone || '',
+          gender: (currentPatient.gender as 'Male' | 'Female') || 'Male',
+          dob: currentPatient.dob || '',
+          physician: currentPatient.physician.name,
+          addressInfo: {
+            address: currentPatient.addressInfo?.address || '',
+            city: currentPatient.addressInfo?.city || '',
+            state: currentPatient.addressInfo?.state || '',
+            country: currentPatient.addressInfo?.country || '',
+          },
+          facility: 'ITR Hospital',
+          status: 'Tái kết nối' as const
+        } : undefined}
         onUpdate={() => messageApi.success('Patient update successful')}
         onCreate={() => messageApi.success('Creating successful patient')}
         mode={drawerMode}
