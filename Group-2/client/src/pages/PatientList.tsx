@@ -59,12 +59,12 @@ const PatientList: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, [dispatch, pagination.current, pagination.pageSize, filters.search]);
 
-  // show error bằng message popup
-  useEffect(() => {
-    if (error) {
-      messageApi.error(`Error: ${error}`);
-    }
-  }, [error, messageApi]);
+  // // show error bằng message popup
+  // useEffect(() => {
+  //   if (error) {
+  //     messageApi.error(`Error: ${error}`);
+  //   }
+  // }, [error, messageApi]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

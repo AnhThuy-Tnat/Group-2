@@ -42,6 +42,10 @@ export const patientService = {
         return await patient.populate("physician");
     },
     update: async (id, input) => {
+        const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(input.email)) {
+            throw new Error(`Email ${input.email} không hợp lệ`);
+        }
         const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
