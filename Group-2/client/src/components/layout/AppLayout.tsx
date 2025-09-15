@@ -72,7 +72,7 @@ export default function AppLayout() {
                     selectedKeys={[activeKey]}
                     onClick={(e) => navigate(`/${e.key}`)}
                     items={[
-                        { key: 'patients', icon: <TeamOutlined />, label: 'Quản lý bệnh nhân' },
+                        { key: 'patients', icon: <TeamOutlined />, label: 'Patient management' },
                     ]}
                 />
             </Sider>

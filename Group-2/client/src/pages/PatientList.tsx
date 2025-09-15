@@ -213,7 +213,13 @@ const PatientList: React.FC = () => {
           showSizeChanger
           pageSizeOptions={[5, 10, 20, 50]}
           showQuickJumper
-          showTotal={(total, range) => `${range[0]}-${range[1]} của ${total} bệnh nhân`}
+          locale={{
+            items_per_page: ' / page',
+            jump_to: 'Go to',
+            page: 'Page',
+            jump_to_confirm: 'Go',
+          }}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} patient`}
           onChange={(page, pageSize) => {
             dispatch(setPagination({ current: page, pageSize }));
           }}
