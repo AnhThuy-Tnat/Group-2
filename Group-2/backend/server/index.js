@@ -2,10 +2,10 @@ import express from "express";
 import { connectdb } from "./config/dbconn.js";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
-import { typeDefs, resolvers } from "./schema/schema.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from 'dotenv';
+import schema from './graphql/buildSchema.js';
 
 
 dotenv.config();
@@ -15,7 +15,7 @@ async function start() {
         await connectdb();
 
         // 2. Tạo Apollo server
-        const server = new ApolloServer({ typeDefs, resolvers });
+        const server = new ApolloServer({ schema });
         await server.start();
 
         // 3. Tạo express app

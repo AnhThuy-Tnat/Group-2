@@ -1,6 +1,7 @@
-import { patientService } from "./patient.service.js";
+import { patientService } from '../../services/patient.service.js';
 
-export const patientResolvers = {
+
+export default {
     Query: {
         patients: async (_, { page, limit, filter }) => {
             return await patientService.getAll(page, limit, filter);

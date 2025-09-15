@@ -1,4 +1,4 @@
-import { Physician } from "../../models/physician.model.js";
+import { Physician } from "../models/physician.model.js";
 
 export const physicianService = {
     getAll: async () => {

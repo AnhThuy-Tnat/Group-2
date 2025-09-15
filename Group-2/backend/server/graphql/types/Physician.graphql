@@ -1,0 +1,9 @@
+type Physician {
+  id: ID!
+  email: String!
+  name: String!
+  title: String!
+  phone: String
+  gender: String
+  dob: String
+}

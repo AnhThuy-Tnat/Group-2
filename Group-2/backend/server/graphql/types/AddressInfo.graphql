@@ -1,0 +1,6 @@
+type AddressInfo {
+    address: String
+    city: String
+    state: String
+    country: String
+}

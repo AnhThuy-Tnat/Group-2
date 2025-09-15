@@ -1,0 +1,5 @@
+extend type Mutation {
+  createPatient(input: PatientInput!): Patient
+  updatePatient(id: ID!, input: PatientInput!): Patient
+  deletePatient(id: ID!): Boolean
+}

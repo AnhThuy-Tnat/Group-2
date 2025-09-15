@@ -23,6 +23,9 @@
     "mongoose": "^8.18.1"
   },
   "devDependencies": {
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.1.1",
+    "@graphql-tools/schema": "^10.0.25",
     "nodemon": "^3.1.10"
   }
 }

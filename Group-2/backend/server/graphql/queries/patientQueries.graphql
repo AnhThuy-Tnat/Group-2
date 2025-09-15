@@ -1,0 +1,10 @@
+extend type Query {
+  patients(page: Int, limit: Int, filter: String): PatientPagination
+  patient(id: ID!): Patient
+}
+
+type PatientPagination {
+  data: [Patient]
+  total: Int
+  totalPages: Int
+}

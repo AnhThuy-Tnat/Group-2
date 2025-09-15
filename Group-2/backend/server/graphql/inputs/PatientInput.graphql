@@ -1,0 +1,10 @@
+input PatientInput {
+  email: String!
+  name: String!
+  phone: String
+  gender: String
+  dob: String
+  physician: ID!
+  addressInfo: AddressInfoInput
+  country: String
+}

@@ -1,5 +1,5 @@
-import { Patient } from "../../models/patient.model.js";
-import { Physician } from "../../models/physician.model.js";
+import { Patient } from "../models/patient.model.js";
+import { Physician } from "../models/physician.model.js";
 
 export const patientService = {
     getAll: async (page = 1, limit = 10, filter = "") => {
