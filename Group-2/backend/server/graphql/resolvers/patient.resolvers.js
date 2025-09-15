@@ -21,4 +21,11 @@ export default {
             return await patientService.delete(id);
         }
     },
+
+    Patient: {
+        // Thay vì populate, ta dùng DataLoader
+        physician: async (parent, _, { physicianLoader }) => {
+            return physicianLoader.load(parent.physician);
+        },
+    },
 };

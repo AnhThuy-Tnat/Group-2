@@ -15,7 +15,6 @@ export const patientService = {
             .sort({ name: 1 })
             .skip(skip)
             .limit(limit);
-        await Patient.populate(patients, { path: "physician" });
         return {
             data: patients,
             total,
@@ -34,12 +33,13 @@ export const patientService = {
         const newPatient = await new Patient(input).save();
         return await newPatient.populate("physician");
     },
+
     getById: async (id) => {
         const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
-        return await patient.populate("physician");
+        return await patient;
     },
     update: async (id, input) => {
         const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -58,7 +58,7 @@ export const patientService = {
         }
         Object.assign(patient, input);
         const updatedPatient = await patient.save();
-        return await updatedPatient.populate("physician");
+        return await updatedPatient;
     },
     delete: async (id) => {
         const patient = await Patient.findById(id);

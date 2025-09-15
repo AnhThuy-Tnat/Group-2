@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from 'dotenv';
 import schema from './graphql/buildSchema.js';
+import PhysicianLoader from './services/loaders/physiciansLoader.js';
 
 
 dotenv.config();
@@ -24,7 +25,11 @@ async function start() {
             "/graphql",
             cors(),
             bodyParser.json(),
-            expressMiddleware(server)
+            expressMiddleware(server, {
+                context: async ({ req }) => ({
+                    physicianLoader: PhysicianLoader(),
+                }),
+            })
         );
 
         // 4. Listen 1 lần
