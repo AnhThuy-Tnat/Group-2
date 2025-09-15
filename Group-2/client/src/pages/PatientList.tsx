@@ -37,7 +37,7 @@ const { Search } = Input;
 
 const PatientList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading, error, filters, pagination, currentPatient, patients } = usePatientSelectors();
+  const { loading, filters, pagination, currentPatient, patients } = usePatientSelectors();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<'create' | 'view' | 'edit'>('create');
