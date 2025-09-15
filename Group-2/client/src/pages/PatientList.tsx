@@ -20,25 +20,24 @@ import {
   EyeOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch } from '../redux/hooks';
 import {
   fetchPatients,
   deletePatient,
   setFilters,
   setPagination,
   setCurrentPatient,
-} from '../../redux/patient/patientSlice';
-import { usePatientSelectors, useFilteredPatients } from '../../redux/hooks';
-import type { Patient } from '../../redux/patient/patientSlice';
-import PatientDrawer from '../../components/PatientDrawer';
+} from '../redux/patient/patientSlice';
+import { usePatientSelectors } from '../redux/hooks';
+import type { Patient } from '../redux/patient/patientSlice';
+import PatientDrawer from '../components/PatientDrawer';
 
 const { Title } = Typography;
 const { Search } = Input;
 
 const PatientList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading, error, filters, pagination, currentPatient } = usePatientSelectors();
-  const filteredPatients = useFilteredPatients();
+  const { loading, error, filters, pagination, currentPatient, patients } = usePatientSelectors();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<'create' | 'view' | 'edit'>('create');
@@ -67,15 +66,11 @@ const PatientList: React.FC = () => {
     }
   }, [error, messageApi]);
 
-  const handleSearch = (value: string) => {
-    dispatch(setFilters({ search: value }));
-  };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch(setFilters({ search: value }));
+    dispatch(setPagination({ current: 1 })); // Reset về trang 1 khi search
   };
-
 
   // CRUD handlers
   const handleCreate = () => {
@@ -178,7 +173,6 @@ const PatientList: React.FC = () => {
     },
   ];
 
-
   return (
     <Space direction="vertical" size="large" style={{ display: 'flex' }}>
       {contextHolder}
@@ -190,7 +184,6 @@ const PatientList: React.FC = () => {
           <Search
             placeholder="Patient Search..."
             allowClear
-            onSearch={handleSearch}
             onChange={handleSearchChange}
             style={{ width: 300 }}
           />
@@ -202,7 +195,7 @@ const PatientList: React.FC = () => {
 
       <Table
         columns={columns}
-        dataSource={filteredPatients}
+        dataSource={patients}
         rowKey="id"
         loading={loading}
         pagination={false}
@@ -238,3 +231,4 @@ const PatientList: React.FC = () => {
 };
 
 export default PatientList;
+

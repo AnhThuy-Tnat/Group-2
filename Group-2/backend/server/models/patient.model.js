@@ -19,6 +19,7 @@ const PatientSchema = new mongoose.Schema(
         dob: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ }, // YYYY-MM-DD
         physician: { type: mongoose.Schema.Types.ObjectId, ref: "Physician", required: true },
         addressInfo: { type: AddressInfoSchema, default: () => ({}) },
+        country: { type: String, default: "VietNam" },
         status: { type: String, enum: ["ACTIVE", "DELETED"], default: "ACTIVE" },
     },
     { timestamps: true }

@@ -144,32 +144,3 @@ Hệ thống sử dụng 6 GraphQL operations (3 queries + 3 mutations) với 2 
         }
 
 
-API
-FE gửi Mutation với input.
-
-Resolver nhận → gọi patient.service.create(input).
-
-Service:
-
-Validate email format, trường bắt buộc.
-
-Kiểm tra physician có tồn tại.
-
-Lưu MongoDB (qua Model).
-
-Trả về Patient đã lưu (có thể populate physician).
-
-Apollo Server trả JSON cho FE.
-
-Soft delete: deletePatient chỉ đổi status = "DELETED", không xóa bản ghi → dễ khôi phục, giữ lịch sử.
-
-
-Redux
-Redux Toolkit: giữ UI state (mở/đóng Drawer, filters, pagination, loading, error) và snapshot dữ liệu đã fetch (để render nhất quán, persist sau reload).
-Component bấm Save → dispatch(updatePatient({ id, input })).
-
-Thunk gọi apolloClient.mutate(...).
-
-Thành công → cập nhật Redux state (thay phần tử trong data) → đóng Drawer → bắn message.success.
-
-Thất bại → set error → message.error.

@@ -1,11 +1,4 @@
-/* Nền toàn trang */
-html, body, #root {
-  height: 100%;
-}
-body {
-  background: #f0f2f5;
-  margin: 0;
-}
+/* Layout styles */
 
 /* Layout gốc */
 .app-layout {

@@ -5,9 +5,7 @@ export const patientService = {
     getAll: async (page = 1, limit = 10, filter = "") => {
         const skip = (page - 1) * limit;
 
-        const condition = {
-            status: "ACTIVE",
-        };
+        const condition = {};
         if (filter) {
             condition.email = { $regex: filter, $options: "i" };
         }
@@ -37,14 +35,14 @@ export const patientService = {
         return await newPatient.populate("physician");
     },
     getById: async (id) => {
-        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
+        const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
         return await patient.populate("physician");
     },
     update: async (id, input) => {
-        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
+        const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
@@ -59,12 +57,11 @@ export const patientService = {
         return await updatedPatient.populate("physician");
     },
     delete: async (id) => {
-        const patient = await Patient.findOne({ _id: id, status: "ACTIVE" });
+        const patient = await Patient.findById(id);
         if (!patient) {
             throw new Error(`Patient with id ${id} does not exist`);
         }
-        patient.status = "DELETED";
-        await patient.save();
+        await Patient.findByIdAndDelete(id);
         return true;
     }
 };

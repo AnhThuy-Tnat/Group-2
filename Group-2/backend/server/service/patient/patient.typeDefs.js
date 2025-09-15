@@ -17,6 +17,7 @@ export const patientTypeDefs = gql`
     dob: String
     physician: Physician!
     addressInfo: AddressInfo
+    country: String
   }
 
   input AddressInfoInput {
@@ -34,6 +35,7 @@ export const patientTypeDefs = gql`
     dob: String
     physician: ID!
     addressInfo: AddressInfoInput
+    country: String
   }
 
   type PatientPagination {

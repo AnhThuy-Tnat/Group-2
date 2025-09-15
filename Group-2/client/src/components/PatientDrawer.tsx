@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchPhysicians } from '../redux/physician/physicianSlice';
 import dayjs from 'dayjs';
 import { createPatient, updatePatient, type Patient } from '../redux/patient/patientSlice';
-// Province options will be loaded from API to ensure exact name matching
+// Simplified address form
 
 const { Title } = Typography;
 
@@ -19,9 +19,6 @@ interface PatientDrawerProps {
 const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, mode: externalMode }) => {
   const [mode, setMode] = useState<'view' | 'edit' | 'create'>(externalMode || 'view');
   const [form] = Form.useForm();
-  const [districts, setDistricts] = useState<string[]>([]);
-  const [provinceMap, setProvinceMap] = useState<Record<string, string[]>>({});
-  const [provinceOptions, setProvinceOptions] = useState<string[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
 
   const dispatch = useAppDispatch();
@@ -38,47 +35,20 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
         gender: patient.gender,
         dob: dayjs(patient.dob, 'YYYY-MM-DD'),
         physician: patient.physician?.id || undefined,
-        address: patient.addressInfo?.address || '',
-        city: patient.addressInfo?.city || '',
-        state: patient.addressInfo?.state || '',
-        country: patient.addressInfo?.country || '',
+        addressInfo: {
+          address: patient.addressInfo?.address || '',
+          city: patient.addressInfo?.city || '',
+          state: patient.addressInfo?.state || '',
+          country: patient.addressInfo?.country || '',
+        }
       });
-      if (patient.addressInfo?.state && Object.keys(provinceMap).length > 0) {
-        setDistricts(provinceMap[patient.addressInfo.state] || []);
-      }
+      // Simplified form population
     } else {
       form.resetFields();
     }
-  }, [patient, open, externalMode, provinceMap]);
+  }, [patient, open, externalMode]);
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const res = await fetch('https://provinces.open-api.vn/api/?depth=2');
-        const data = await res.json();
-        const map: Record<string, string[]> = {};
-        const names: string[] = [];
-        (data || []).forEach((p: any) => {
-          const name = p?.name;
-          if (name) {
-            names.push(name);
-            map[name] = (p.districts || []).map((d: any) => d.name);
-          }
-        });
-        setProvinceMap(map);
-        setProvinceOptions(names);
-      } catch (e) {
-        setProvinceMap({});
-        setProvinceOptions([]);
-      }
-    };
-    fetchAll();
-  }, []);
-
-  const loadDistricts = (provinceName: string) => {
-    setDistricts(provinceMap[provinceName] || []);
-    form.setFieldsValue({ city: undefined });
-  };
+  // Simplified - no complex province loading
 
   // load physicians on mount
   useReactEffect(() => {
@@ -229,19 +199,11 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
               </Select>
             </Form.Item>
 
-            <Form.Item name={['addressInfo', 'state']} label="Province/City" style={{ marginBottom: 12 }} >
-              <Select showSearch optionFilterProp="children" onChange={(val) => loadDistricts(val)} loading={!Object.keys(provinceMap).length}>
-                {provinceOptions.map(p => (
-                  <Select.Option key={p} value={p}>{p}</Select.Option>
-                ))}
-              </Select>
+            <Form.Item name={['addressInfo', 'state']} label="Province/City" style={{ marginBottom: 12 }}>
+              <Input placeholder="Enter province/city" />
             </Form.Item>
-            <Form.Item name={['addressInfo', 'city']} label="District" style={{ marginBottom: 12 }} >
-              <Select showSearch optionFilterProp="children" disabled={districts.length === 0}>
-                {districts.map(d => (
-                  <Select.Option key={d} value={d}>{d}</Select.Option>
-                ))}
-              </Select>
+            <Form.Item name={['addressInfo', 'city']} label="District" style={{ marginBottom: 12 }}>
+              <Input placeholder="Enter district" />
             </Form.Item>
             <Form.Item name={['addressInfo', 'address']} label="Permanent Address" style={{ marginBottom: 12 }} >
               <Input />

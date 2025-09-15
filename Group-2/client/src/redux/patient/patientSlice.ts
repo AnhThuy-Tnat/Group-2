@@ -24,36 +24,13 @@ const GET_PATIENTS = gql`
           state
           country
         }
+        country
       }
       total
-      totalPages
     }
   }
 `;
 
-const GET_PATIENT = gql`
-  query GetPatient($id: ID!) {
-    patient(id: $id) {
-      id
-      name
-      email
-      phone
-      gender
-      dob
-      physician {
-        id
-        name
-        email
-      }
-      addressInfo {
-        address
-        city
-        state
-        country
-      }
-    }
-  }
-`;
 
 const CREATE_PATIENT = gql`
   mutation CreatePatient($input: PatientInput!) {
@@ -132,6 +109,7 @@ export interface Patient {
   dob?: string;
   physician: Physician;
   addressInfo?: AddressInfo;
+  country?: string;
 }
 
 export interface PatientInput {
@@ -142,12 +120,11 @@ export interface PatientInput {
   dob?: string;
   physician: string;
   addressInfo?: AddressInfo;
+  country?: string;
 }
 
 export interface PatientFilters {
   search: string;
-  status: 'all' | 'connected' | 'disconnected';
-  province: string;
 }
 
 export interface Pagination {
@@ -171,9 +148,7 @@ const initialState: PatientState = {
   loading: false,
   error: null,
   filters: {
-    search: '',
-    status: 'all',
-    province: 'all'
+    search: ''
   },
   pagination: {
     current: 1,
@@ -182,7 +157,8 @@ const initialState: PatientState = {
   }
 };
 
-// Async thunks
+// Async thunks asynchronous logic để fetch patients
+// fetchPatients là một async thunk để fetch patients từ backend
 export const fetchPatients = createAsyncThunk(
   'patient/fetchPatients',
   async (params: { page?: number; limit?: number; filter?: string } = {}, { rejectWithValue }) => {
@@ -195,27 +171,15 @@ export const fetchPatients = createAsyncThunk(
           filter: params.filter || ''
         }
       });
+      //  Trả về data cho Redux là data từ backend
       return (data as any).patients;
     } catch (error: any) {
+      //  Xử lý lỗi nếu có
       return rejectWithValue(error.message);
     }
   }
 );
 
-export const fetchPatient = createAsyncThunk(
-  'patient/fetchPatient',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const { data } = await apolloClient.query({
-        query: GET_PATIENT,
-        variables: { id },
-      });
-      return (data as any).patient;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
 
 export const createPatient = createAsyncThunk(
   'patient/createPatient',
@@ -246,7 +210,7 @@ export const updatePatient = createAsyncThunk(
     }
   }
 );
-
+// deletePatient là một async thunk để delete patient từ backend
 export const deletePatient = createAsyncThunk(
   'patient/deletePatient',
   async (id: string, { rejectWithValue }) => {
@@ -255,7 +219,7 @@ export const deletePatient = createAsyncThunk(
         mutation: DELETE_PATIENT,
         variables: { id }
       });
-      return { id, success: (data as any).deletePatient };
+      return { id, success: (data as any).deletePatient }; //  Trả về id và success từ backend
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -270,21 +234,12 @@ const patientSlice = createSlice({
     setCurrentPatient: (state, action: PayloadAction<Patient | null>) => {
       state.currentPatient = action.payload;
     },
-    clearCurrentPatient: (state) => {
-      state.currentPatient = null;
-    },
     setFilters: (state, action: PayloadAction<Partial<PatientFilters>>) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     setPagination: (state, action: PayloadAction<Partial<Pagination>>) => {
       state.pagination = { ...state.pagination, ...action.payload };
     },
-    clearError: (state) => {
-      state.error = null;
-    },
-    resetPatientState: () => {
-      return initialState;
-    }
   },
   
   extraReducers: (builder) => {
@@ -304,19 +259,6 @@ const patientSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Fetch single patient
-      .addCase(fetchPatient.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchPatient.fulfilled, (state, action) => {
-        state.loading = false;
-        state.currentPatient = action.payload;
-      })
-      .addCase(fetchPatient.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
 
       // Create patient
       .addCase(createPatient.pending, (state) => {
@@ -376,11 +318,8 @@ const patientSlice = createSlice({
 // Export actions
 export const {
   setCurrentPatient,
-  clearCurrentPatient,
   setFilters,
-  setPagination,
-  clearError,
-  resetPatientState
+  setPagination
 } = patientSlice.actions;
 
 // Export reducer

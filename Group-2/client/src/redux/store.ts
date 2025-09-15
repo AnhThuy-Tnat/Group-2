@@ -5,22 +5,22 @@ import { combineReducers } from '@reduxjs/toolkit';
 import patientReducer from './patient/patientSlice';
 import physicianReducer from './physician/physicianSlice';
 
-// Root reducer
+// Root reducer - Kết hợp tất cả reducers
 const rootReducer = combineReducers({
-  patient: patientReducer,
-  physician: physicianReducer,
+  patient: patientReducer,  // Quản lý state bệnh nhân
+  physician: physicianReducer, // Quản lý state bác sĩ
 });
 
-// Persist config
+// Lưu state vào localStorage
 const persistConfig = {
   key: 'root-v2',
   storage,
-  whitelist: ['patient','physician'], // Persist patient and physician state
+  whitelist: ['patient','physician'], // Chỉ persist 2 slice này
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer); 
 
-// Create store
+// Tạo store với middleware
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>

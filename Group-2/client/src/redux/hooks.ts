@@ -24,36 +24,6 @@ export const usePatientSelectors = () => {
   };
 };
 
-// Filtered patients selector
-export const useFilteredPatients = () => {
-  const { patients, filters } = usePatientSelectors();
-  
-  let filtered = [...patients];
-  
-  // Filter by search
-  if (filters.search) {
-    const searchLower = filters.search.toLowerCase();
-    filtered = filtered.filter(patient => 
-      patient.name.toLowerCase().includes(searchLower) ||
-      patient.email.toLowerCase().includes(searchLower) ||
-      (patient.phone && patient.phone.includes(searchLower))
-    );
-  }
-  
-  // Filter by status (you can add more filters as needed)
-  if (filters.status !== 'all') {
-    // Add status filtering logic here if needed
-  }
-  
-  // Filter by province
-  if (filters.province !== 'all') {
-    filtered = filtered.filter(patient => 
-      patient.addressInfo?.state === filters.province
-    );
-  }
-  
-  return filtered;
-};
 
 
 export const usePatientStats = () => {
@@ -61,7 +31,5 @@ export const usePatientStats = () => {
   
   return {
     total: patients.length,
-    connected: patients.filter(p => p.physician).length, // Assuming patients with physician are "connected"
-    disconnected: patients.filter(p => !p.physician).length,
   };
 };
