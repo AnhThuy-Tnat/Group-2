@@ -43,7 +43,7 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
           state: patient.addressInfo?.state || '',
         }
       });
-      
+
       // Load districts if patient has province
       if (patient.addressInfo?.state) {
         const province = vnProvinces.find((p: Province) => p.name === patient.addressInfo?.state);
@@ -108,11 +108,44 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
         onClose();
       }
     } catch (error: any) {
-      if (error.errorFields) {
-        messageApi.error("Please fill input!");
-      } else {
-        messageApi.error("Errror saving patient");
+      const rawMessage: string =
+        typeof error === 'string'
+          ? error
+          : error?.message || error?.graphQLErrors?.[0]?.message || 'Error saving patient';
+
+      const lower = rawMessage.toLowerCase();
+      let fieldName: (string | number)[] | string | undefined;
+      if (lower.includes('email')) fieldName = 'email';
+      else if (lower.includes('phone')) fieldName = 'phone';
+      else if (lower.includes('physician')) fieldName = 'physician';
+      else if (lower.includes('dob') || lower.includes('date of birth')) fieldName = 'dob';
+      else if (lower.includes('name')) fieldName = 'name';
+
+      // Duplicate email key from Mongo
+      if (lower.includes('e11000') || lower.includes('duplicate key')) {
+        fieldName = 'email';
       }
+
+      // Clean verbose validation prefixes
+      let displayMessage = rawMessage;
+      const validationIdx = lower.indexOf('validation failed');
+      if (validationIdx !== -1) {
+        const m = rawMessage.match(/(?:email|phone|physician|dob|date of birth|name)\s*:\s*(.+)$/i);
+        if (m && m[1]) {
+          displayMessage = m[1].trim();
+        } else {
+          const lastColon = rawMessage.lastIndexOf(':');
+          if (lastColon !== -1 && lastColon < rawMessage.length - 1) {
+            displayMessage = rawMessage.slice(lastColon + 1).trim();
+          }
+        }
+      }
+
+      if (fieldName) {
+        form.setFields([{ name: fieldName as any, errors: [displayMessage] }]);
+        form.scrollToField(fieldName as any);
+      }
+      messageApi.error(displayMessage);
     }
   };
 
@@ -176,7 +209,7 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
             <Form.Item name="name" label="Patient Name" style={{ marginBottom: 12 }} rules={[{ required: true, message: 'Please enter patient name' }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="email" label="Email" style={{ marginBottom: 12 }} rules={[{ required: true, type: 'email', message: 'Email hợp lệ!' }]}>
+            <Form.Item name="email" label="Email" style={{ marginBottom: 12 }} rules={[{ required: true, type: 'email', message: 'Invalid email!' }]}>
               <Input />
             </Form.Item>
             <Form.Item name="phone" label="Phone Number" style={{ marginBottom: 12 }} rules={[{ required: true, message: 'Please enter phone number' }]}>
@@ -208,7 +241,11 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
                     },
                   ]}
                 >
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    style={{ width: '100%' }}
+                    disabledDate={(current) => current && current.isAfter(dayjs(), 'day')}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -225,8 +262,8 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
             </Form.Item>
 
             <Form.Item name={['addressInfo', 'state']} label="Province/City" style={{ marginBottom: 12 }}>
-              <Select 
-                placeholder="Select province/city" 
+              <Select
+                placeholder="Select province/city"
                 showSearch
                 optionFilterProp="children"
                 onChange={handleProvinceChange}
@@ -242,8 +279,8 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
               </Select>
             </Form.Item>
             <Form.Item name={['addressInfo', 'city']} label="District" style={{ marginBottom: 12 }}>
-              <Select 
-                placeholder="Select district" 
+              <Select
+                placeholder="Select district"
                 showSearch
                 optionFilterProp="children"
                 disabled={districts.length === 0}
