@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchPhysicians } from '../redux/physician/physicianSlice';
 import dayjs from 'dayjs';
 import { createPatient, updatePatient, type Patient } from '../redux/patient/patientSlice';
-// Simplified address form
+import { vnProvinces, type Province } from '../constants/vnProvinces';
 
 const { Title } = Typography;
 
@@ -20,6 +20,7 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
   const [mode, setMode] = useState<'view' | 'edit' | 'create'>(externalMode || 'view');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [districts, setDistricts] = useState<string[]>([]);
 
   const dispatch = useAppDispatch();
   const physicians = useAppSelector(state => state.physician.list);
@@ -35,20 +36,36 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
         gender: patient.gender,
         dob: dayjs(patient.dob, 'YYYY-MM-DD'),
         physician: patient.physician?.id || undefined,
+        country: patient.country || 'VietNam',
         addressInfo: {
           address: patient.addressInfo?.address || '',
           city: patient.addressInfo?.city || '',
           state: patient.addressInfo?.state || '',
-          country: patient.addressInfo?.country || '',
         }
       });
-      // Simplified form population
+      
+      // Load districts if patient has province
+      if (patient.addressInfo?.state) {
+        const province = vnProvinces.find((p: Province) => p.name === patient.addressInfo?.state);
+        if (province) {
+          setDistricts(province.districts);
+        }
+      }
     } else {
       form.resetFields();
+      setDistricts([]);
     }
   }, [patient, open, externalMode]);
 
-  // Simplified - no complex province loading
+  // Handle province change
+  const handleProvinceChange = (provinceName: string) => {
+    const province = vnProvinces.find((p: Province) => p.name === provinceName);
+    if (province) {
+      setDistricts(province.districts);
+      // Clear district when province changes
+      form.setFieldsValue({ 'addressInfo.city': undefined });
+    }
+  };
 
   // load physicians on mount
   useReactEffect(() => {
@@ -75,6 +92,9 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
       const payload = {
         ...values,
         dob: values.dob ? values.dob.format('YYYY-MM-DD') : undefined,
+        addressInfo: {
+          ...values.addressInfo,
+        }
       }
       // Call appropriate API or dispatch action based on mode
       if (mode === 'edit' && patient) {
@@ -147,7 +167,8 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
                   return patient.physician?.name;
                 })()}
               </Descriptions.Item>
-              <Descriptions.Item label="Permanent Address">{`${patient.addressInfo?.address || ''}, ${patient.addressInfo?.city}, ${patient.addressInfo?.state}, ${patient.addressInfo?.country}`}</Descriptions.Item>
+              <Descriptions.Item label="Country">{patient.country || 'VietNam'}</Descriptions.Item>
+              <Descriptions.Item label="Permanent Address">{`${patient.addressInfo?.address || ''}, ${patient.addressInfo?.city}, ${patient.addressInfo?.state}`}</Descriptions.Item>
             </Descriptions>
           </Space>
         ) : (
@@ -199,11 +220,43 @@ const PatientDrawer: React.FC<PatientDrawerProps> = ({ open, patient, onClose, m
               </Select>
             </Form.Item>
 
+            <Form.Item name="country" label="Country" style={{ marginBottom: 12 }} initialValue="VietNam">
+              <Input placeholder="VietNam" disabled />
+            </Form.Item>
+
             <Form.Item name={['addressInfo', 'state']} label="Province/City" style={{ marginBottom: 12 }}>
-              <Input placeholder="Enter province/city" />
+              <Select 
+                placeholder="Select province/city" 
+                showSearch
+                optionFilterProp="children"
+                onChange={handleProvinceChange}
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {vnProvinces.map((province: Province) => (
+                  <Select.Option key={province.name} value={province.name}>
+                    {province.name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item name={['addressInfo', 'city']} label="District" style={{ marginBottom: 12 }}>
-              <Input placeholder="Enter district" />
+              <Select 
+                placeholder="Select district" 
+                showSearch
+                optionFilterProp="children"
+                disabled={districts.length === 0}
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {districts.map(district => (
+                  <Select.Option key={district} value={district}>
+                    {district}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item name={['addressInfo', 'address']} label="Permanent Address" style={{ marginBottom: 12 }} >
               <Input />
